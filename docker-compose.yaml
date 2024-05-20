@@ -1,0 +1,11 @@
+services:
+
+  plex:
+    build: plex
+    ports:
+      - 32400:32400
+    volumes:
+      - plex:/var/lib/plexmediaserver
+
+volumes:
+  plex:
