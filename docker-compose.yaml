@@ -7,5 +7,20 @@ services:
     volumes:
       - plex:/var/lib/plexmediaserver
 
+  mattermost:
+    build:
+      context: mattermost
+      args:
+          # Set these in docker-compose.override.yaml
+          db_user: mmuser
+          db_password: mostest
+    ports:
+      - 8065:8065
+    volumes:
+      - mattermost:/opt/mattermost
+      - mattermost-db:/var/lib/postgresql
+
 volumes:
   plex:
+  mattermost:
+  mattermost-db:
