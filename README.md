@@ -23,7 +23,7 @@ docker compose up <service>
 On first boot, you will need to claim the server. You can do this in two ways:
 
 1. Open a web browser directly on the machine, go to `localhost:32400/manager`, and follow the instructions.
-  - This cannot be done easily if running on a cloud server, proceed to option 2.
+	- This cannot be done easily if running on a cloud server, proceed to option 2.
 2. Create an ssh-tunnel between your computer and the server on port 32400, then go to `localhost:32400/manager`, and follow the instructions.
 
 ### Adding Media
