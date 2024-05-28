@@ -13,7 +13,7 @@ docker compose up
 To start a particular service:
 
 ```
-docker compose start <service>
+docker compose up <service>
 ```
 
 ## Plex
