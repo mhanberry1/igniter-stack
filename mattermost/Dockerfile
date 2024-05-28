@@ -1,16 +1,26 @@
-from ubuntu
+from ubuntu:22.04
 
 arg db_user
 arg db_password
 
 env DEBIAN_FRONTEND=noninteractive
 env TZ=Etc/UTC
-env POSTGRES_CMD="/usr/lib/postgresql/14/bin/postgres --config-file=/etc/postgresql/14/main/postgresql.conf"
+env POSTGRES_CMD="/usr/lib/postgresql/16/bin/postgres --config-file=/etc/postgresql/16/main/postgresql.conf"
 
 # Install dependencies
 run \
   apt update && \
-  apt install -y curl lsb-release gpg systemctl postgresql postgresql-contrib
+  apt install -y curl lsb-release gpg systemctl
+
+# Install postgres 16 repository
+run \
+  echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > \
+  /etc/apt/sources.list.d/pgdg.list && \
+  curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | \
+  gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg && \
+  apt update && \
+  apt install -y postgresql-16
+
 
 # Install mattermost
 run \
@@ -25,6 +35,7 @@ add \
   config.json /opt/mattermost/config/config.json
 
 run \
+  locale-gen en_US.utf8 && \
   chown mattermost:mattermost /opt/mattermost/config/config.json && \
   chmod 600 /opt/mattermost/config/config.json && \
   sed -i \

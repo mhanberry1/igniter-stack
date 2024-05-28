@@ -2,6 +2,7 @@ services:
 
   plex:
     build: plex
+    restart: always
     ports:
       - 32400:32400
     volumes:
@@ -14,6 +15,7 @@ services:
           # Set these in docker-compose.override.yaml
           db_user: mmuser
           db_password: mostest
+    restart: always
     ports:
       - 8065:8065
     volumes:
