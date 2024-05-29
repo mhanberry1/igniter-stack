@@ -1,4 +1,9 @@
 services:
+  reverse-proxy:
+    build: reverse-proxy
+    network_mode: host
+    ports:
+      - 80:80
 
   plex:
     build: plex
