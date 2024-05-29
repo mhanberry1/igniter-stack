@@ -5,7 +5,7 @@ arg db_password
 
 env DEBIAN_FRONTEND=noninteractive
 env TZ=Etc/UTC
-env POSTGRES_CMD="/usr/lib/postgresql/16/bin/postgres --config-file=/etc/postgresql/16/main/postgresql.conf"
+env POSTGRES="/usr/lib/postgresql/16/bin/postgres --config-file=/etc/postgresql/16/main/postgresql.conf"
 
 # Install dependencies
 run \
@@ -31,12 +31,10 @@ run \
 	apt install mattermost -y
 
 # Configure environment
-add \
-	config.json /opt/mattermost/config/config.json
+add --chown=mattermost:mattermost config.json /opt/mattermost/config/config.json
 
 run \
 	locale-gen en_US.utf8 && \
-	chown mattermost:mattermost /opt/mattermost/config/config.json && \
 	chmod 600 /opt/mattermost/config/config.json && \
 	sed -i \
 		-e "s/<POSTGRES_USER>/$db_user/g" \
@@ -47,11 +45,12 @@ run \
 user postgres
 
 run \
-	$POSTGRES_CMD & \ 
+	$POSTGRES & \
 	sleep 1 && \
 	psql -c "create user $db_user with password '$db_password';" && \
 	psql -c "create database mattermost;" && \
-	psql -c "grant all privileges on database mattermost to $db_user;"
+	psql -c "grant all privileges on database mattermost to $db_user;" && \
+	psql -d mattermost -c "grant all on schema public to $db_user;"
 
 # Clean up
 user root
@@ -61,6 +60,6 @@ run \
 	apt clean
 
 cmd \
-	su -c "$POSTGRES_CMD" postgres & \
+	su -c "$POSTGRES" postgres & \
 	sleep 5 && \
 	mattermost
